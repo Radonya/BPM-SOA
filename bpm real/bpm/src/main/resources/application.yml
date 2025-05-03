@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+  application:
+    name: bpm-gateway
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bpm_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    gateway:
+      routes:
+        # Route pour Swagger UI
+        - id: openapi
+          uri: http://localhost:8080
+          predicates:
+            - Path=/v3/api-docs/**, /swagger-ui/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<segment>.*), /$\{segment}/v3/api-docs
+            - RewritePath=/swagger-ui/(?<segment>.*), /$\{segment}/swagger-ui
+
+        # Routes vers le serveur Node.js
+        - id: node-services
+          uri: http://localhost:3001
+          predicates:
+            - Path=/api/notifications/**, /api/assurances/**
+        
+        # Routes vers les services Spring Boot locaux
+        - id: users-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/users/**
+        
+        - id: employes-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/employes/**
+        
+        - id: changements-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/changements/**
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: Spring Boot API
+      - url: http://localhost:3001/v3/api-docs
+        name: Node.js Services API
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  paths-to-match:
+    - /api/** 

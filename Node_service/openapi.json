@@ -1,0 +1,183 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Node.js Services API",
+    "version": "1.0",
+    "description": "API pour les services de notification et d'assurance"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001",
+      "description": "Node.js Services"
+    }
+  ],
+  "paths": {
+    "/api/notifications": {
+      "get": {
+        "summary": "Obtenir toutes les notifications",
+        "responses": {
+          "200": {
+            "description": "Liste des notifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notification"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une nouvelle notification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Notification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notification créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assurances": {
+      "get": {
+        "summary": "Obtenir toutes les assurances",
+        "responses": {
+          "200": {
+            "description": "Liste des assurances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Assurance"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une nouvelle assurance",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Assurance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Assurance créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Assurance"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assurances/confirmer-changement": {
+      "post": {
+        "summary": "Confirmer un changement de bénéficiaire",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "changementId": {
+                    "type": "string"
+                  },
+                  "numeroContrat": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Changement confirmé"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "employeId": {
+            "type": "string"
+          },
+          "dateCreation": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Assurance": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nomCompagnie": {
+            "type": "string"
+          },
+          "numeroContrat": {
+            "type": "string"
+          },
+          "changementId": {
+            "type": "string"
+          },
+          "dateChangement": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+} 
